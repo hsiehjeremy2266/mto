@@ -291,7 +291,6 @@ Obstacle mto::square(float start_x,float start_y,float end_x,float end_y,float w
 
     std::vector<float> vector_obstacle={(end_x-start_x)/hypotf(end_x-start_x, end_y-start_y),(end_y-start_y)/hypotf(end_x-start_x, end_y-start_y)};//BD向量
 
-
     std::vector<float> A={start_x+float((vector_obstacle[0]*std::cos(M_PI/2.0-theta)-vector_obstacle[1]*std::sin(M_PI/2.0-theta))*height),start_y+float((vector_obstacle[0]*std::sin(M_PI/2.0-theta)+vector_obstacle[1]*std::cos(M_PI/2.0-theta))*height)};
 
     std::vector<float> B={start_x,start_y};
@@ -462,9 +461,9 @@ void turn_coordinate(float final_theta,bool reverse,float ngKP,float ngKD,float 
 
         float turn=((delta_theta*ngKP)+(total_delta_theta*ngKI)+((delta_theta-error_delta_theta)*ngKD))*motor.motor2center*final_speed;
 
-        motor.leftgroup(turn*3.25/motor.wheeldiameter);
+        motor.leftgroup(turn*3.25/motor.wheeldiameter*motor.ratio);
 
-        motor.rightgroup(-turn*3.25/motor.wheeldiameter);    
+        motor.rightgroup(-turn*3.25/motor.wheeldiameter*motor.ratio);    
 
         condition2+=(fabs(delta_theta)<2);
 
@@ -536,9 +535,9 @@ void move_coordinatev3(float target_x,float target_y,float final_theta,float spe
 
     float Oturn = ( delta_wall.error_angle * OngKP ) * motor.motor2center * final_speed;//障礙物轉向  (listed)  
 
-    motor.leftgroup((final_speed + deltaVel - turn - Oturn)*3.25/motor.wheeldiameter);
+    motor.leftgroup((final_speed + deltaVel - turn - Oturn)*3.25/motor.wheeldiameter*motor.ratio);
 
-    motor.rightgroup((final_speed - deltaVel + turn + Oturn)*3.25/motor.wheeldiameter);
+    motor.rightgroup((final_speed - deltaVel + turn + Oturn)*3.25/motor.wheeldiameter*motor.ratio);
 
     total_delta_theta +=delta_theta;//KI
 

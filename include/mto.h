@@ -24,6 +24,7 @@ namespace  mto {
     float motor2center;
     float wheeldiameter;
     float max_width;
+    float ratio;
     
     void leftgroup(double LVel);
     void rightgroup(double RVel);
