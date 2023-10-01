@@ -122,7 +122,7 @@ static pros::Motor left_back_motor(2, true); // port 2, reversed
 static pros::Motor right_front_motor(9, false); // port 3, not reversed
 static pros::Motor right_back_motor(10, false); // port 4,not  reversed
 
-static Motor motor{&left_front_motor,&right_front_motor,&left_back_motor,&right_back_motor,12.7,3.25,20.7};
+static Motor motor{&left_front_motor,&right_front_motor,&left_back_motor,&right_back_motor,12.7,3.25,20.7,1.7};
 static rotation tracking{&front_rot,nullptr,&right_rot,nullptr,2.75,&imu,16,0,6,0};
 static location current{0,0,0};
 

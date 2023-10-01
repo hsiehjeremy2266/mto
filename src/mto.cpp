@@ -24,6 +24,7 @@ using namespace mto;
 Obstacle mto::obstacle (){
 
     std::vector<Obstacle>obstacle_i={
+        //write here
 
         square(-7.5, 60, 7.5, 75, 15, 15)
 
@@ -461,17 +462,15 @@ void turn_coordinate(float final_theta,bool reverse,float ngKP,float ngKD,float 
 
         float turn=((delta_theta*ngKP)+(total_delta_theta*ngKI)+((delta_theta-error_delta_theta)*ngKD))*motor.motor2center*final_speed;
 
-        motor.leftgroup(turn*3.25/motor.wheeldiameter*motor.ratio);
+        motor.leftgroup(turn*3.25/motor.wheeldiameter*motor.ratio/1.7);
 
-        motor.rightgroup(-turn*3.25/motor.wheeldiameter*motor.ratio);    
+        motor.rightgroup(-turn*3.25/motor.wheeldiameter*motor.ratio/1.7);    
 
         condition2+=(fabs(delta_theta)<2);
 
         total_delta_theta+=delta_theta;
 
         error_delta_theta=delta_theta;
-
-        pros::screen::print(TEXT_MEDIUM,4,"theta:%lf",turn);
 
         pros::c::delay(5);   
 
@@ -535,9 +534,9 @@ void move_coordinatev3(float target_x,float target_y,float final_theta,float spe
 
     float Oturn = ( delta_wall.error_angle * OngKP ) * motor.motor2center * final_speed;//障礙物轉向  (listed)  
 
-    motor.leftgroup((final_speed + deltaVel - turn - Oturn)*3.25/motor.wheeldiameter*motor.ratio);
+    motor.leftgroup((final_speed + deltaVel - turn - Oturn)*3.25/motor.wheeldiameter*motor.ratio/1.7);
 
-    motor.rightgroup((final_speed - deltaVel + turn + Oturn)*3.25/motor.wheeldiameter*motor.ratio);
+    motor.rightgroup((final_speed - deltaVel + turn + Oturn)*3.25/motor.wheeldiameter*motor.ratio/1.7);
 
     total_delta_theta +=delta_theta;//KI
 
