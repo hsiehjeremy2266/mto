@@ -6,4 +6,4 @@ MTO只是用tank模式的車
 2. obstacle:計算車子與障礙物的距離，來進行躲避或繞行
 3. movement:利用pure pursuit的算法，讓車子移動到該目的地
 教學:
-連結: https://drive.google.com/drive/u/1/my-drive
+連結: https://drive.google.com/file/d/1BYEV1eN3UQksgWMAQpR-uXpgFkmx2fzs/view
