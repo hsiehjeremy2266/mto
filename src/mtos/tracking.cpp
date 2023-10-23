@@ -11,7 +11,7 @@ using namespace mto;
 
 //----------------------------------------------------
 //
-//                  躲避障礙物
+//                  里程計odometry
 //
 //----------------------------------------------------
 
@@ -23,11 +23,15 @@ float preheading=0;
 
 void position(){
 
+    //輸出編碼器的值
+
     float raw_hor=tracking().hor();
     
     float raw_ver=tracking().ver();
 
     float raw_imu=heading2();
+
+    //編碼器和陀螺儀的變化量
 
     float delta_hor=raw_hor-prehorizontal;
 
@@ -37,9 +41,13 @@ void position(){
 
     delta_heading=delta_heading-((fabs(delta_heading)>180)*(delta_heading/fabs(delta_heading+(delta_heading==0))*360));//算出的值大於180度或小於-180度進行修正
 
+    //轉成實際車子橫移的座標量
+    
     float delta_x=delta_hor+(delta_heading*M_PI/180.0*((tracking().front_length-tracking().back_length)/((tracking().front!=nullptr)+(tracking().back!=nullptr))));
 
     float delta_y=delta_ver+(delta_heading*M_PI/180.0*((tracking().right_length-tracking().left_length)/((tracking().right!=nullptr)+(tracking().left!=nullptr))));
+
+    //實際座標
 
     current={
 
@@ -51,6 +59,8 @@ void position(){
 
         };
 
+    //記錄過去的編碼器值
+    
         prehorizontal=raw_hor;
 
         prevertical=raw_ver;

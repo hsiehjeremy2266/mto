@@ -16,10 +16,10 @@ namespace mto{
 
     
 
-Obstacle square(float start_x,float start_y,float end_x,float end_y,float width,float height);
+Obstacle square(float start_x,float start_y,float end_x,float end_y,float width,float height);//矩形障礙物
 
-Obstacle circle (float center_x,float center_y,float diameter=15.0);
+Obstacle circle (float center_x,float center_y,float diameter=15.0);//圓形障礙物
 
-Obstacle sum(const Obstacle& accum,const Obstacle& s);
+Obstacle sum(const Obstacle& accum,const Obstacle& s);//obstacle資料型態的總和binary
 
 };

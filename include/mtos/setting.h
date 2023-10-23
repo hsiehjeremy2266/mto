@@ -71,11 +71,12 @@ class encoder{
     float heading();
 };
 
-Motor motor();
-rotation tracking();
-extern location current;
-Obstacle obstacle ();
-float heading2(bool reverse =false);
+Motor motor();//馬達設定
+rotation tracking();//編碼器設定
+extern location current;//起始位置設定
+Obstacle obstacle ();//障礙物設定
+
+float heading2(bool reverse =false);//車向角度(-180~180)
 
 
 }

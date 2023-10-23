@@ -15,6 +15,8 @@ using namespace mto;
 //
 //---------------------------------------------------
 
+//記錄過去的pid值
+
 float old_latKP=1.3;//1.2
 float old_ngKP=0.0015;//0.003
 float old_OlatKP=0.2;//5
@@ -35,6 +37,7 @@ void mto::setPID(float latKP,float ngKP,float OlatKP,float OngKP,float latKD,flo
     if (ngKD!=-1)old_ngKD=ngKD;
      
 }
+
 
 float  delta_length,error_delta_length,total_delta_length;
 
@@ -100,17 +103,19 @@ void turn_coordinate(float final_theta,bool reverse,float ngKP,float ngKD,float 
 
     while (!(condition2>5)) {    //當condition1 成立時跳出迴圈時 只校正車子方向
 
-        float delta_theta=final_theta-heading2(reverse) + start_theta;
+        float delta_theta=final_theta-heading2(reverse) + start_theta;//方向角度差
 
         delta_theta=delta_theta-((fabs(delta_theta)>180)*(delta_theta/fabs(delta_theta+(delta_theta==0))*360));//算出的值大於180度或小於-180度進行修正
 
-        float turn=((delta_theta*ngKP)+(total_delta_theta*ngKI)+((delta_theta-error_delta_theta)*ngKD))*motor().motor2center*final_speed;
+        float turn=((delta_theta*ngKP)+(total_delta_theta*ngKI)+((delta_theta-error_delta_theta)*ngKD))*motor().motor2center*final_speed;//轉換成實際速度
 
         motor().leftgroup(turn*3.25/motor().wheeldiameter*motor().ratio/1.7);
 
         motor().rightgroup(-turn*3.25/motor().wheeldiameter*motor().ratio/1.7);    
 
         condition2+=(fabs(delta_theta)<2);
+
+        //紀錄當前的誤差值
 
         total_delta_theta+=delta_theta;
 
@@ -124,9 +129,11 @@ void turn_coordinate(float final_theta,bool reverse,float ngKP,float ngKD,float 
 
 void move_coordinatev3(float target_x,float target_y,float final_theta,float speed,bool reverse ,float latKP,float ngKP,float OlatKP,float OngKP,float latKD,float ngKD,float latKI,float ngKI,bool center){
 
-    float start_x=current.x,start_y=current.y,start_theta=heading2(reverse);
+    float start_x=current.x,start_y=current.y,start_theta=heading2(reverse);//如果執行move()會啟用次變數
 
-    int condition1 = 0 ,condition2 = 0 ;
+    int condition1 = 0 ;//跳出回回圈條件事
+
+    //pid計算所需的變數
 
     float error_delta_theta=0, total_delta_theta=0.0;
 
@@ -134,7 +141,7 @@ void move_coordinatev3(float target_x,float target_y,float final_theta,float spe
 
     target_x_2=target_x,target_y_2=target_y,reverse2=reverse;//this is for obstacle function
 
-    float final_speed=0;
+    float final_speed=0;//output motor final velocity
 
     old_latKP=latKP;//renew the pid value
 
@@ -150,7 +157,7 @@ void move_coordinatev3(float target_x,float target_y,float final_theta,float spe
 
     Obstacle delta_wall= obstacle();//計算障礙物的距離
 
-    float delta_x = (target_x*(1 - (reverse * 2)))+(start_x*center)-(current.x),delta_y=(target_y*(1 - (reverse * 2)))+(start_y*center)-(current.y);    
+    float delta_x = (target_x*(1 - (reverse * 2)))+(start_x*center)-(current.x),delta_y=(target_y*(1 - (reverse * 2)))+(start_y*center)-(current.y); //與終點的座標誤差   
 
     float target_theta = atan2(delta_x,delta_y)*180.0/M_PI-heading2(reverse);//車子目前的車向到目標點的角度
 
@@ -168,7 +175,7 @@ void move_coordinatev3(float target_x,float target_y,float final_theta,float spe
 
     float input_distance = (start2target[0]*start2current[0]+(start2target[1]*start2current[1]))/hypot(start2target[0],start2target[1]);//進度條(車子走的距離)
 
-    float ACCspeed = ACC(speed, hypot(start2target[0],start2target[1]), input_distance);
+    float ACCspeed = ACC(speed, hypot(start2target[0],start2target[1]), input_distance);//加減速
 
     final_speed = (ACCspeed-((delta_wall.error!=0)*ACCspeed*std::pow(0.1,fabs(delta_wall.length)*OlatKP)))*(1 - (reverse * 2));//躲避障礙物減速度修正   (listed)
 

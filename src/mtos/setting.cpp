@@ -1,4 +1,5 @@
 #include "setting.h"
+#include "obstacle.h"
 #include <algorithm>
 #include <cmath>
 #include <iterator>
@@ -51,9 +52,12 @@ location mto::current{0,0,0};
 Obstacle mto::obstacle (){
 
     std::vector<Obstacle>obstacle_i={
-        //write here
+        //write here 障礙物的設定
+        
 
-        square(-7.5, 60, 7.5, 75, 15, 15)
+        square(-7.5, 60, 7.5, 75, 15, 15),//矩形障礙物設在(-7.5,60)到(7.5,15)寬度15公分 長度15公分
+
+        circle(30, -30,20)//圓形障礙物設在(30,-30)直徑20cm
 
     };
 
@@ -64,9 +68,10 @@ Obstacle mto::obstacle (){
 
 //----------------------------------------------------
 //
-//                  sensors output
+//         感應器、馬達輸出 sensors, motor output  
 //
 //----------------------------------------------------
+
 void mto::Motor::leftgroup(double LVel){
 
         this->left_front->move_velocity(LVel);

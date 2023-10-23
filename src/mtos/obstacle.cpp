@@ -9,6 +9,12 @@
 
 using namespace mto;
 
+//----------------------------------------------------
+//
+//                  躲避障礙物
+//
+//----------------------------------------------------
+
 float target_x_2=0,target_y_2=0;
 
 bool reverse2=false;
@@ -20,6 +26,8 @@ Obstacle mto::square(float start_x,float start_y,float end_x,float end_y,float w
     float theta=atan(height/width);
 
     std::vector<float> vector_obstacle={(end_x-start_x)/hypotf(end_x-start_x, end_y-start_y),(end_y-start_y)/hypotf(end_x-start_x, end_y-start_y)};//BD向量
+
+    //矩形四個頂點
 
     std::vector<float> A={start_x+float((vector_obstacle[0]*std::cos(M_PI/2.0-theta)-vector_obstacle[1]*std::sin(M_PI/2.0-theta))*height),start_y+float((vector_obstacle[0]*std::sin(M_PI/2.0-theta)+vector_obstacle[1]*std::cos(M_PI/2.0-theta))*height)};
 
@@ -33,7 +41,7 @@ Obstacle mto::square(float start_x,float start_y,float end_x,float end_y,float w
 
     std::vector<float> p_dir={target_x_2-x/hypotf(target_x_2, target_y_2),target_y_2-y/hypotf(target_x_2, target_y_2)};//現在車子到終點向量
 
-    std::vector<float> BA={A[0]-B[0],A[1]-B[1]},CB={B[0]-C[0],B[1]-C[1]},DC={C[0]-D[0],C[1]-D[1]},AD={D[0]-A[0],D[1]-A[1]};
+    std::vector<float> BA={A[0]-B[0],A[1]-B[1]},CB={B[0]-C[0],B[1]-C[1]},DC={C[0]-D[0],C[1]-D[1]},AD={D[0]-A[0],D[1]-A[1]};//順時鐘的四個向量
 
     std::vector<float> BA_N={(-A[1]+B[1])/hypotf(BA[0],BA[1]),(A[0]-B[0])/hypotf(BA[0],BA[1])};//BA法向量(單位向量)
 
@@ -45,13 +53,19 @@ Obstacle mto::square(float start_x,float start_y,float end_x,float end_y,float w
 
     std::vector<float> V={x-start_x,y-start_y};//障礙物開始點到現在車子點的向量
 
+    //四個法向量的正射影
+
     float 
     dotBA= (V[0]*BA_N[0]+V[1]*BA_N[1]),
     dotCB= (V[0]*CB_N[0]+V[1]*CB_N[1]),
     dotDC= (V[0]*DC_N[0]+V[1]*DC_N[1]),
     dotAD= (V[0]*AD_N[0]+V[1]*AD_N[1]);
 
+    //計算出實際與障礙物的距離
+
     float length = std::sqrt(pow(dotBA*(dotBA>0),2)+pow(dotCB*(dotCB>0),2)+pow((dotDC-width)*((dotDC-width)>0),2)+pow((dotAD-height)*((dotAD-height)>0),2));
+
+    //決定是從左邊讓過去還是右邊繞過去
 
     float
     dirBA=p_dir[0]*BA[0]+(p_dir[1]*BA[1]),
@@ -59,7 +73,11 @@ Obstacle mto::square(float start_x,float start_y,float end_x,float end_y,float w
     dirDC=p_dir[0]*DC[0]+(p_dir[1]*DC[1]),
     dirAD=p_dir[0]*AD[0]+(p_dir[1]*AD[1]);
 
+    //計算車子方向與車子到障礙物中心點的夾角
+
     float angle=std::atan2(M[0]-x,M[1]-y)*180.0/M_PI-heading2(reverse2);
+
+    //向哪個方向轉
 
     int direction = -1+(2*(((dotBA>0)*dirBA)+((dotCB>0)*dirCB)+((dotDC>0)*dirDC)+((dotAD>0)*dirAD)>0));
 
@@ -68,7 +86,9 @@ Obstacle mto::square(float start_x,float start_y,float end_x,float end_y,float w
 
 }
 
+
 Obstacle mto::circle (float center_x,float center_y,float diameter){
+
 
     float x=current.x,y=current.y;
 
@@ -76,11 +96,11 @@ Obstacle mto::circle (float center_x,float center_y,float diameter){
 
     std::vector<float> p2center={center_x-x,center_y-y};
 
-    float length=hypotf(p2center[0],p2center[1])-(diameter/2.0);
+    float length=hypotf(p2center[0],p2center[1])-(diameter/2.0);//實際與障礙物的距離
 
-    float direction=(-1+(2*((p_direction[0]*-p2center[1]+(p_direction[1]*p2center[0]))>0)));
+    float direction=(-1+(2*((p_direction[0]*-p2center[1]+(p_direction[1]*p2center[0]))>0)));//向哪個方向轉
 
-    float angle=std::atan2(p2center[0],p2center[1])*180.0/M_PI-heading2(reverse2);
+    float angle=std::atan2(p2center[0],p2center[1])*180.0/M_PI-heading2(reverse2);//夾角
 
     return Obstacle(length*(length<(motor().max_width+10)),direction*(90-fabs(angle))*(length<(motor().max_width+10))*((90-fabs(angle)>0)),angle,length);
 
